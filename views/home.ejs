@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div class="container">
+    <hr>
+    <h2 class="text-center">### Pratos mais Pedidos ###</h2>
+    <hr>
+    <% dados.forEach(dado => { %>  
+        <div class="card mt-3">
+            <div class="card-header">
+                <h4><%= dado.nome %></h4>
+            </div>
+            <div class="card-body">
+                <p><%= dado.descricao %></p>
+                <h5>R$<%= dado.preco.toFixed(2) %></h5>
+                <div class="row">
+                    <div class="col-6">
+                        <img class="img-fluid" src="<%= dado.img %>" alt="<%= dado.nome %>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+<%- include('partials/footer') %>
