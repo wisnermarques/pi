@@ -1,63 +1,63 @@
 <%- include('partials/header.ejs') %>
-  <%- include('partials/navbar.ejs') %>
+<%- include('partials/navbar.ejs') %>
 
-    <div class="container">
-      <hr>
-      <h2 class="text-center">### Pratos mais Pedidos ###</h2>
-      <hr>
-      <% dados.forEach(dado=> { %>
-        <div class="card mt-3">
-          <div class="card-header">
-            <h4>
-              <%= dado.nome %>
-            </h4>
-          </div>
-          <div class="card-body">
-            <p>
-              <%= dado.descricao %>
-            </p>
-            <h5>R$<%= dado.preco %>
-            </h5>
-            <div class="row">
-              <div class="col-6">
-                <img class="img-fluid" src="<%= dado.img %>" alt="<%= dado.nome %>">
-              </div>
-            </div>
-          </div>
-        </div>
-        <% }) %>
-          <hr>
-          <div class="row">
-            <nav>
-              <ul class="pagination">
-                <% if (current==2) { %>
-                  <li class="page-item">
-                    <a class="page-link" href="/">
-                      Anterior </a>
-                  </li>
-                  <% } %>
-
-                    <% if (current> 2) { %>
-                      <li class="page-item">
-                        <a class="page-link" href="/pagina/<%= parseInt(current) - 1 %> ">Anterior</a>
-                      </li>
-                      <% } %>
-
-                        <% if (pages> current) { %>
-                          <li class="page-item">
-                            <a class="page-link" href="/pagina/<%= parseInt(current) + 1 %> ">
-                              Próxima</a>
-                          </li>
-                          <% } %>
-              </ul>
-            </nav>
-
-          </div>
-          <hr>
+<div class="container">
+  <hr>
+  <h2 class="text-center">### Pratos mais Pedidos ###</h2>
+  <hr>
+  <% dados.forEach(dado=> { %>
+  <div class="card mt-3">
+    <div class="card-header">
+      <h4>
+        <%= dado.nome %>
+      </h4>
     </div>
+    <div class="card-body">
+      <p>
+        <%= dado.descricao %>
+      </p>
+      <h5>R$<%= dado.preco %>
+      </h5>
+      <div class="row">
+        <div class="col-6">
+          <img class="img-fluid" src="<%= dado.img %>" alt="<%= dado.nome %>">
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+  <hr>
+  <div class="row">
+    <nav>
+      <ul class="pagination">
+        <% if (current==2) { %>
+        <li class="page-item">
+          <a class="page-link" href="/">
+            Anterior </a>
+        </li>
+        <% } %>
 
-    <script src="/js/bootstrap.bundle.min.js"></script>
+        <% if (current> 2) { %>
+        <li class="page-item">
+          <a class="page-link" href="/pagina/<%= parseInt(current) - 1 %> ">Anterior</a>
+        </li>
+        <% } %>
 
-    </body>
+        <% if (pages> current) { %>
+        <li class="page-item">
+          <a class="page-link" href="/pagina/<%= parseInt(current) + 1 %> ">
+            Próxima</a>
+        </li>
+        <% } %>
+      </ul>
+    </nav>
 
-    </html>
+  </div>
+  <hr>
+</div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
