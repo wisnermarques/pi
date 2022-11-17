@@ -12,7 +12,7 @@
             </div>
             <div class="card-body">
                 <p><%= dado.descricao %></p>
-                <h5>R$<%= dado.preco.toFixed(2) %></h5>
+                <h5>R$<%= dado.preco %></h5>
                 <div class="row">
                     <div class="col-6">
                         <img class="img-fluid" src="<%= dado.img %>" alt="<%= dado.nome %>">
@@ -21,6 +21,19 @@
             </div>
         </div>
     <% }) %>
+    <hr>
+            <div class="row">
+              <nav>
+                <ul class="pagination">
+                  <% if (pages> 1) { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/pagina/<%= current + 1 %> ">Próxima</a>
+                    </li>
+                    <% } %>
+                </ul>
+              </nav>
+            </div>
+            <hr>
 </div>
 
 <%- include('partials/footer') %>

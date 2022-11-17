@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Dado = require('./models/Dado');
 
 const app = express();
 
@@ -14,39 +15,45 @@ app.use(bodyParser.json());
 
 const port = 3000;
 
-const dados = [
-    {
-      nome: "1/2 SALADA TROPICAL",
-      descricao:
-        "Alface, rucula, manga, uva, abacaxi, tomate cereja, mussarela, azeitona e creme de frango",
-      preco: 18,
-      img: "https://www.anamariabrogui.com.br/assets/uploads/receitas/fotos/usuario-3453-871ff3a4e3844b0fe17f8bc6e192b71b.jpg",
-    },
-    {
-      nome: "LEGUMES",
-      descricao:
-        "Brócolis, couve flor, cenoura, vagem, milho, ervilha, palmito e tomate cereja",
-      preco: 21,
-      img: "https://img.freepik.com/fotos-premium/prato-de-legumes-salteados-na-mesa-de-madeira_45583-1698.jpg",
-    },
-    {
-      nome: "PALMITO",
-      descricao: "",
-      preco: 8,
-      img: "https://www.cervejapetra.com.br/wp-content/uploads/2019/06/palmito-945x486.jpg",
-    },
-    {
-      nome: "CUPIM",
-      descricao: "Acompanha arroz, mandioca e vinagrete",
-      preco: 90,
-      img: "https://wordbrasil.files.wordpress.com/2012/10/img_9123-1280x853.jpg",
-    },
-  ];
-
 app.get('/', (req, res) => {
-    
-    res.render('home', { dados });
-});
+
+ Dado.findAndCountAll().then((total) => {
+      let pages = total.count; //total de registros
+      
+      if(pages < 3) {
+        pages = 0;
+      }
+      Dado.findAll({
+        limit: 3,
+        order: [["id", "DESC"]],
+      }).then((dados) => {
+        res.render("home", { dados, current: 1, pages });
+      });
+    });
+  });
+
+  app.get('/pagina/:page', (req, res) => {
+    var perPage = 3;
+    var current = req.params.page;
+
+  Dado.findAll({
+    limit: perPage,
+    offset: perPage * current - perPage,
+    order: [["id", "DESC"]],
+  }).then((dados) => {
+    Dado.findAndCountAll().then((total) => {
+      const count = total.count;
+      const pages = count / perPage;
+      res.render("pagina", {
+        dados,
+        current,
+        pages,
+      });
+    });
+  });
+
+  });
+
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta: ${port}`);
