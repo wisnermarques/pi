@@ -2,35 +2,48 @@ const bcrypt = require('bcryptjs');
 
 const User = require("../models/User");
 
-function loginForm(req, res) {
-  res.render('admin/login');
+async function loginForm(req, res, next) {
+  const msg = await req.consumeFlash('error');
+  res.render('admin/login', { msg });
 }
 
-function login(req, res) {
+async function login(req, res) {
   const { username, password } = req.body;
 
   if (username == undefined || username == '') {
+    await req.flash('error', 'Usuário ou senha inválida, tente novamente!');
     res.redirect('/admin');
-  }
-
-  if (password == undefined || password.length < 6) {
+  } else if (password == undefined || username == '' || password.length < 6) {
+    await req.flash('error', 'Usuário ou senha inválida, tente novamente!');
     res.redirect('/admin');
-  }
-
-  User.findOne({
-    where: { username: username}
-  }).then(user => {
-    if(user == undefined) {
-      res.redirect('/admin')
-    } else {
-      const correct = bcrypt.compareSync(password, user.password);
-      if(correct) {
-        res.send('ok');
+  } else {
+    User.findOne({
+      where: { username: username }
+    }).then(async user =>  {
+      if (user == undefined) {
+        await req.flash('error', 'Usuário ou senha inválida, tente novamente!');
+        res.redirect('/admin');
       } else {
-        res.redirect('/admin')
+        const correct = bcrypt.compareSync(password, user.password);
+        if (correct) {
+          req.session.user = {
+            id: user.id,
+            username: user.username
+          };
+          res.redirect('/admin/users');
+        } else {
+          await req.flash('error', 'Usuário ou senha inválida, tente novamente!');
+          res.redirect('/admin');
+        }
+
       }
-    }
-  })
+    })
+  }
+}
+
+function logout(req, res) {
+  req.session.user = undefined;
+  res.redirect("/admin");
 }
 
 function formCadastroUsuario(req, res) {
@@ -39,14 +52,6 @@ function formCadastroUsuario(req, res) {
 
 function cadastroUsuario(req, res) {
   const { username, password } = req.body;
-
-  if (username == undefined || username == '') {
-    res.redirect('/admin/cadastro/user');
-  }
-
-  if (password == undefined || password.length < 6) {
-    res.redirect('/admin/cadastro/user');
-  }
 
   //SELECT * FROM usuarios WHERE usuario = 'wisner'
   User.findOne({
@@ -71,10 +76,10 @@ function cadastroUsuario(req, res) {
       }
       res.redirect('/admin');
     }
-    
+
   }).catch(error => {
     console.log(error)
   });
 
 }
-module.exports = { loginForm, formCadastroUsuario, cadastroUsuario, login };
+module.exports = { loginForm, formCadastroUsuario, cadastroUsuario, login, logout };

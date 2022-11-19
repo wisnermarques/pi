@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const { flash } = require('express-flash-message');
+
 const Dado = require('./models/Dado');
 const adminRoutes = require('./routes/AdminRoutes');
 
@@ -15,6 +18,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const port = 3000;
+
+//sessions
+app.use(
+  session({
+    secret: "Qualquer coisa",
+    saveUninitialized: true,
+    cookie: { maxAge: 30000 },
+  })
+);
+
+// apply express-flash-message middleware
+app.use(flash({ sessionKeyName: 'flashMessage' }));
+
 
 app.get('/', (req, res) => {
 
