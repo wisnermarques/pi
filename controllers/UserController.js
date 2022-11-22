@@ -1,10 +1,11 @@
 const User = require("../models/User");
 
-function listaUsuarios(req, res) {
+async function listaUsuarios(req, res) {
+    const msgError = await req.consumeFlash('error');
+    const msgSuccess = await req.consumeFlash('success');
     User.findAll().then(users => {
-        res.render('admin/users', { users });
-    })
-   
+        res.render('admin/users', { users, msgSuccess, msgError });
+    });
 }
 
 function deleteUser(req, res) {

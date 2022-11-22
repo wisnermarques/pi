@@ -5,6 +5,7 @@ const { flash } = require('express-flash-message');
 
 const Dado = require('./models/Dado');
 const adminRoutes = require('./routes/AdminRoutes');
+const cardapioRoutes = require('./routes/CardapioRoutes');
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.get('/pagina/:page', (req, res) => {
 });
 
 app.use('/admin', adminRoutes);
+app.use('/cardapio', cardapioRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta: ${port}`);

@@ -82,4 +82,39 @@ function cadastroUsuario(req, res) {
   });
 
 }
-module.exports = { loginForm, formCadastroUsuario, cadastroUsuario, login, logout };
+
+function formEdicaoUsuario(req, res) {
+  const id = req.params.id;
+  User.findByPk(id).then(user => {
+    if(user == undefined) {
+      res.redirect('/admin/users');
+    } else {
+      res.render('admin/edit', { user });
+    }
+  }).catch(err => {
+    console.log(err);
+    res.redirect('/admin/users');
+  })
+
+}
+
+function salvaAltUsuario(req, res) {
+  const {id, username, password } = req.body;
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+
+  User.update(
+    { username, password: hash },
+    { where: { id: id } }
+  ).then(async ()=> {
+    await req.flash('success', 'Dados do usuário alterado com sucesso!');
+    res.redirect('/admin/users')
+  }).catch(async err => {
+    console.log(err);
+    await req.flash('error', 'Usuário ou senha inválida, tente novamente!');
+    res.redirect('/admin/users')
+  })
+}
+
+module.exports = { loginForm, formCadastroUsuario, cadastroUsuario, login, logout, formEdicaoUsuario, salvaAltUsuario };
